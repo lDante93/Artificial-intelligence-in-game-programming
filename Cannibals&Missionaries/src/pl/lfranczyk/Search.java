@@ -7,21 +7,22 @@ class Search {
     ArrayList<State> list, historyList;
 
 
-    Search() {
+    Search(State choosenState) {
         list = new ArrayList<>();
         historyList = new ArrayList<>();
-        list.add(new State(3, 3, 0, 0, true, null));
-        historyList.add(new State(3, 3, 0, 0, true, null));
+        list.add(choosenState);
+        historyList.add(choosenState);
 
 
     }
 
     void lookup() {
+        final Long timeStart = System.currentTimeMillis();
         while (true) {
-            //Selecting first state (3,3,0,0,true,null)
+            //Selecting first state
             State state = selectState();
             if (isEndState(state)) {
-                System.out.println("Found correct State: " + state.printState()+"\n");
+                System.out.println("Found correct State: " + state.printState() + "\n");
 
                 System.out.println("Tree of parents: " + state.toString());
                 break;
@@ -35,12 +36,20 @@ class Search {
             //adding filtered states to list and historyList
             actualVariables(tmpList);
 
-
         }
+        final Long timeEnd = System.currentTimeMillis();
+        System.out.println("Time of processed program: " + (timeEnd - timeStart) + "ms");
     }
 
     State selectState() {
-        return list.remove(0);
+        try {
+            return list.remove(0);
+        } catch (Exception e) {
+            System.err.println("\n" +
+                    "It is not possible to find a solution for a given case.");
+            System.exit(1);
+            return null;
+        }
     }
 
     boolean isEndState(State state) {
